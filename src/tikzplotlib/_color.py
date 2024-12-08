@@ -2,6 +2,15 @@ import matplotlib as mpl
 import numpy as np
 import webcolors
 
+CSS3_NAMES_TO_HEX = {
+    'black': '#000000', 'white': '#ffffff', 'red': '#ff0000',
+    'lime': '#00ff00', 'blue': '#0000ff', 'yellow': '#ffff00',
+    'cyan': '#00ffff', 'magenta': '#ff00ff', 'silver': '#c0c0c0',
+    'gray': '#808080', 'maroon': '#800000', 'olive': '#808000',
+    'green': '#008000', 'purple': '#800080', 'teal': '#008080',
+    'navy': '#000080', # (Add more colors if needed)
+    }
+
 # RGB values (as taken from xcolor.dtx):
 builtin_colors = {
     "white": [1, 1, 1],
@@ -28,12 +37,13 @@ builtin_colors = {
 
 def _get_closest_colour_name(rgb):
     match = None
-    mindiff = 1.0e15
-    for h, name in webcolors.CSS3_HEX_TO_NAMES.items():
-        r = int(h[1:3], 16)
-        g = int(h[3:5], 16)
-        b = int(h[5:7], 16)
+    mindiff = float('inf')
 
+    for name, hex_value in CSS3_NAMES_TO_HEX.items():
+        # Convert hex value to RGB tuple
+        r, g, b = webcolors.hex_to_rgb(hex_value)
+
+        # Calculate the squared difference
         diff = (rgb[0] - r) ** 2 + (rgb[1] - g) ** 2 + (rgb[2] - b) ** 2
         if diff < mindiff:
             match = name
