@@ -466,11 +466,11 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
         # see matplotlib.lines.Line2D.set_dashes
 
         # get defaults
-        default_dashOffset, default_dashSeq = mpl.lines._get_dash_pattern(line_style)
+        default_dashSeq = line.get_dash() if hasattr(line, "get_dash") else None
 
         # get dash format of line under test
-        dashSeq = line._us_dashSeq
-        dashOffset = line._us_dashOffset
+        dashSeq = getattr(line, "_us_dashSeq", None)
+        dashOffset = getattr(line, "_us_dashOffset", None)  # Safeguard access to _us_dashOffset
 
         lst = list()
         if dashSeq != default_dashSeq:
@@ -483,11 +483,9 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
                 )
             )
 
-        if dashOffset != default_dashOffset:
-            lst.append(f"dash phase={dashOffset}pt")
-
         if len(lst) > 0:
             return ", ".join(lst)
+
 
     return {
         "": None,
